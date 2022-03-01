@@ -26,7 +26,7 @@ import rssreader.model.Feed;
 
 /**
  * A panel displaying the details of a {@link Feed} article.
- * 
+ *
  * @author Footeware.ca
  */
 public class ArticleComposite extends Composite {
@@ -34,7 +34,7 @@ public class ArticleComposite extends Composite {
 	/**
 	 * Listens for mouse enetering or exiting a {@link Control} and modifies its
 	 * colors.
-	 * 
+	 *
 	 * @author Footeware.ca
 	 *
 	 */
@@ -52,7 +52,7 @@ public class ArticleComposite extends Composite {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param parent  {@link Composite}
 	 * @param style   int
 	 * @param article {@link Article}

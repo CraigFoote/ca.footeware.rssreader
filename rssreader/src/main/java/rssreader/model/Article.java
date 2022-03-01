@@ -7,7 +7,7 @@ import java.util.Date;
 
 /**
  * A domain model representing a {@link Feed} article.
- * 
+ *
  * @author Footeware.ca
  */
 public class Article {
@@ -19,7 +19,7 @@ public class Article {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param title       {@link String}
 	 * @param feedName    {@link String}
 	 * @param publishDate {@link Date}

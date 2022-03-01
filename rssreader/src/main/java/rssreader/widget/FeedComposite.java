@@ -21,14 +21,14 @@ import rssreader.model.Feed;
 
 /**
  * A panel displaying the details of a {@link Feed}.
- * 
+ *
  * @author Footeware.ca
  */
 public class FeedComposite extends Composite {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param parent {@link Composite}
 	 * @param style  int
 	 * @param feed   {@link Feed}

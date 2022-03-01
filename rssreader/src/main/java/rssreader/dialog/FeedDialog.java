@@ -21,7 +21,7 @@ import rssreader.model.Feed;
 
 /**
  * A dialog to enter or edit a {@link Feed} description.
- * 
+ *
  * @author Footeware.ca
  */
 public class FeedDialog extends Dialog {
@@ -33,7 +33,7 @@ public class FeedDialog extends Dialog {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param shell {@link Shell}
 	 */
 	public FeedDialog(Shell shell) {
@@ -42,7 +42,7 @@ public class FeedDialog extends Dialog {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param shell {@link Shell}
 	 * @param feed  {@link Feed}
 	 */
@@ -133,7 +133,7 @@ public class FeedDialog extends Dialog {
 	/**
 	 * Tests whether the provided {@link String} can be used to construct an
 	 * {@link URL}.
-	 * 
+	 *
 	 * @param string {@link String}
 	 * @return boolean true if string can be used to construct an URL
 	 */

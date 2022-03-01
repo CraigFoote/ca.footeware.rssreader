@@ -53,7 +53,7 @@ import rssreader.widget.FeedComposite;
 
 /**
  * Reads RSS news feeds and displays their articles.
- * 
+ *
  * @author Footeware.ca
  */
 public class RssReader {
@@ -86,7 +86,7 @@ public class RssReader {
 
 	/**
 	 * Delete a feed, remove it from Feeds tab and persist the feeds list.
-	 * 
+	 *
 	 * @param feed          {@link Feed}
 	 * @param feedComposite {@link FeedComposite}
 	 */
@@ -104,38 +104,7 @@ public class RssReader {
 		for (Control articleComposite : articlesComposite.getChildren()) {
 			articleComposite.dispose();
 		}
-		List<Article> articles = new ArrayList<>();
-		for (Feed feed : feeds) {
-			if (feed.isShowItems()) {
-				try {
-					URL feedSource = new URL(feed.getUrl());
-					SyndFeedInput input = new SyndFeedInput();
-					SyndFeed syndFeed = input.build(new XmlReader(feedSource));
-					List<SyndEntry> entries = syndFeed.getEntries();
-					for (SyndEntry syndEntry : entries) {
-						SyndImage image = syndFeed.getImage();
-						Article article;
-						if (image != null) {
-							article = new Article(syndEntry.getTitle(), syndFeed.getTitle(),
-									syndEntry.getPublishedDate(), syndFeed.getImage().getUrl(), syndEntry.getLink());
-						} else {
-							article = new Article(syndEntry.getTitle(), syndFeed.getTitle(),
-									syndEntry.getPublishedDate(), null, syndEntry.getLink());
-						}
-						articles.add(article);
-					}
-				} catch (IOException | IllegalArgumentException | NullPointerException | FeedException e) {
-					MessageDialog.openError(shell, "Error",
-							"An error occurred showing articles for '" + feed.getName() + "':\n\n" + e.getMessage());
-				}
-			}
-		}
-		articles.sort((o1, o2) -> -(o1.getPublishDate().compareTo(o2.getPublishDate())));
-		for (Article article : articles) {
-			ArticleComposite articleComposite = new ArticleComposite(articlesComposite, SWT.BORDER, article);
-			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(articleComposite);
-		}
-		computeArticleSizes();
+		getArticlesTask().start();
 	}
 
 	/**
@@ -153,9 +122,73 @@ public class RssReader {
 	}
 
 	/**
+	 * Get the list of articles for provided feed.
+	 *
+	 * @param feed {@link Feed}
+	 * @return {@link List} of {@link Article}
+	 */
+	private static List<Article> fetchArticles(Feed feed) {
+		List<Article> articles = new ArrayList<>();
+		try {
+			URL feedSource = new URL(feed.getUrl());
+			SyndFeedInput input = new SyndFeedInput();
+			SyndFeed syndFeed = input.build(new XmlReader(feedSource));
+			List<SyndEntry> entries = syndFeed.getEntries();
+			for (SyndEntry syndEntry : entries) {
+				SyndImage image = syndFeed.getImage();
+				Article article;
+				if (image != null) {
+					article = new Article(syndEntry.getTitle(), syndFeed.getTitle(), syndEntry.getPublishedDate(),
+							syndFeed.getImage().getUrl(), syndEntry.getLink());
+				} else {
+					article = new Article(syndEntry.getTitle(), syndFeed.getTitle(), syndEntry.getPublishedDate(), null,
+							syndEntry.getLink());
+				}
+				articles.add(article);
+			}
+		} catch (IOException | IllegalArgumentException | NullPointerException | FeedException e) {
+			// switch to UI thread to display message
+			Display.getDefault().asyncExec(() -> MessageDialog.openError(shell, "Error",
+					"An error occurred showing articles for '" + feed.getName() + "':\n\n" + e.getMessage()));
+		}
+		return articles;
+	}
+
+	/**
+	 * Gets feed articles on non-ui thread then updates UI.
+	 *
+	 * @return {@link Thread}
+	 */
+	public static Thread getArticlesTask() {
+		return new Thread() {
+			@Override
+			public void run() {
+				List<Article> articles = new ArrayList<>();
+				for (Feed feed : feeds) {
+					if (feed.isShowItems()) {
+						List<Article> fetchedArticles = fetchArticles(feed);
+						articles.addAll(fetchedArticles);
+					}
+				}
+				articles.sort((o1, o2) -> -(o1.getPublishDate().compareTo(o2.getPublishDate())));
+				// update UI
+				Display.getDefault().asyncExec(() -> {
+					for (Article article : articles) {
+						ArticleComposite articleComposite = new ArticleComposite(articlesComposite, SWT.BORDER,
+								article);
+						GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
+								.applyTo(articleComposite);
+					}
+					computeArticleSizes();
+				});
+			}
+		};
+	}
+
+	/**
 	 * Initialize the font registry with commonly used fonts. The registry will
 	 * handle disposal of the fonts.
-	 * 
+	 *
 	 * @param display {@link Display}
 	 */
 	private static void initFontRegistry(Display display) {
@@ -167,7 +200,7 @@ public class RssReader {
 	/**
 	 * Initialize the image registry with commonly used images. The registry will
 	 * handle disposal of the images.
-	 * 
+	 *
 	 * @param display {@link Display}
 	 */
 	private static void initImageRegistry(Display display) {
@@ -194,7 +227,7 @@ public class RssReader {
 
 	/**
 	 * The program entry point.
-	 * 
+	 *
 	 * @param args {@link String} array
 	 */
 	public static void main(String[] args) {
@@ -217,9 +250,7 @@ public class RssReader {
 			public void widgetSelected(SelectionEvent e) {
 				FeedDialog dialog = new FeedDialog(shell);
 				if (dialog.open() == Window.OK) {
-					String name = dialog.getName();
-					String url = dialog.getUrl();
-					Feed feed = new Feed(name, url, false);
+					Feed feed = new Feed(dialog.getName(), dialog.getUrl(), false);
 					feeds.add(feed);
 					displayFeeds();
 					persistFeeds();
@@ -283,7 +314,7 @@ public class RssReader {
 
 	/**
 	 * Update the provided composite to reflect changes in a feed's name or URL.
-	 * 
+	 *
 	 * @param feedComposite {@link FeedComposite}
 	 */
 	public static void updateFeedDisplay(FeedComposite feedComposite) {

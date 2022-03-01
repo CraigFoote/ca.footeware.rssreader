@@ -5,7 +5,7 @@ package rssreader.model;
 
 /**
  * A domain model representing a {@link Feed}.
- * 
+ *
  * @author Footeware.ca
  */
 public class Feed {
@@ -21,7 +21,7 @@ public class Feed {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param name      {@link String}
 	 * @param address   {@link String}
 	 * @param url       {@link String}
