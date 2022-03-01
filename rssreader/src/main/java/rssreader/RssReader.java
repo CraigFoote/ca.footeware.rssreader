@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.prefs.Preferences;
@@ -68,7 +69,7 @@ public class RssReader {
 		RssReader reader = new RssReader();
 		reader.open();
 	}
-	
+
 	private final Preferences prefs = Preferences.userRoot().node(RssReader.class.getName());
 	private final List<Feed> feeds = new ArrayList<>();
 	private SashForm sash;
@@ -250,11 +251,15 @@ public class RssReader {
 	/**
 	 * Load the feeds from persisted preferences.
 	 */
+	@SuppressWarnings("unchecked")
 	private void loadFeeds() {
 		Gson gson = new Gson();
 		String json = prefs.get("feeds", "");
-		Type feedList = TypeToken.getParameterized(ArrayList.class, Feed.class).getType();
-		feeds.addAll(gson.fromJson(json, feedList));
+		Type feedListType = TypeToken.getParameterized(ArrayList.class, Feed.class).getType();
+		Object fromJson = gson.fromJson(json, feedListType);
+		if (fromJson != null) {
+			feeds.addAll((Collection<? extends Feed>) fromJson);
+		}
 	}
 
 	private void open() {
@@ -316,7 +321,8 @@ public class RssReader {
 		articlesComposite.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 		GridLayoutFactory.fillDefaults().numColumns(1).margins(10, 10).applyTo(articlesComposite);
 
-		browser = new Browser(sash, SWT.BORDER);
+		browser = new Browser(sash, SWT.BORDER | SWT.WEBKIT);
+		browser.setJavascriptEnabled(true);
 
 		loadFeeds();
 		displayFeeds();

@@ -42,13 +42,23 @@ public class ArticleComposite extends Composite {
 		@Override
 		public void mouseEnter(MouseEvent e) {
 			ArticleComposite.this.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_SELECTION));
+			titleLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT));
+			feedLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT));
+			publishedLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_SELECTION_TEXT));
 		}
 
 		@Override
 		public void mouseExit(MouseEvent e) {
 			ArticleComposite.this.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+			titleLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
+			feedLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
+			publishedLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
 		}
 	}
+	private Label titleLabel;
+	private Label feedLabel;
+
+	private Label publishedLabel;
 
 	/**
 	 * Constructor.
@@ -91,24 +101,27 @@ public class ArticleComposite extends Composite {
 		imageLabel.addMouseListener(clickListener);
 		GridDataFactory.fillDefaults().span(1, 3).applyTo(imageLabel);
 
-		Label titleLabel = new Label(this, SWT.WRAP);
+		titleLabel = new Label(this, SWT.WRAP);
 		titleLabel.setText(article.getTitle());
 		titleLabel.setFont(reader.getFontRegistry().get("bold"));
 		titleLabel.addMouseTrackListener(hoverListener);
 		titleLabel.addMouseListener(clickListener);
+		titleLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(titleLabel);
 
-		Label feedLabel = new Label(this, SWT.WRAP);
+		feedLabel = new Label(this, SWT.WRAP);
 		feedLabel.setText(article.getFeedName());
 		feedLabel.addMouseTrackListener(hoverListener);
 		feedLabel.addMouseListener(clickListener);
+		feedLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(feedLabel);
 
-		Label publishedLabel = new Label(this, SWT.WRAP);
+		publishedLabel = new Label(this, SWT.WRAP);
 		publishedLabel.setText(article.getPublishDate().toString());
 		publishedLabel.setFont(reader.getFontRegistry().get("italic"));
 		publishedLabel.addMouseTrackListener(hoverListener);
 		publishedLabel.addMouseListener(clickListener);
+		publishedLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(publishedLabel);
 	}
 }
