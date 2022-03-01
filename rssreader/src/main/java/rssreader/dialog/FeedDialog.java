@@ -35,6 +35,12 @@ public class FeedDialog extends Dialog {
 		this.feed = feed;
 	}
 
+	private void checkEnableOkButton() {
+		boolean haveName = !name.isEmpty();
+		boolean haveUrl = !url.isEmpty() && isUrl(url);
+		getButton(IDialogConstants.OK_ID).setEnabled(haveName && haveUrl);
+	}
+
 	@Override
 	protected void configureShell(Shell newShell) {
 		super.configureShell(newShell);
@@ -86,22 +92,6 @@ public class FeedDialog extends Dialog {
 		return container;
 	}
 
-	private void checkEnableOkButton() {
-		boolean haveName = !name.isEmpty();
-		boolean haveUrl = !url.isEmpty() && isUrl(url);
-		getButton(IDialogConstants.OK_ID).setEnabled(haveName && haveUrl);
-	}
-
-	private boolean isUrl(String string) {
-		try {
-			URL url = new URL(string);
-			url.toURI();
-			return true;
-		} catch (MalformedURLException | URISyntaxException e) {
-			return false;
-		}
-	}
-
 	@Override
 	protected Point getInitialSize() {
 		return new Point(600, 150);
@@ -119,6 +109,16 @@ public class FeedDialog extends Dialog {
 	 */
 	public String getUrl() {
 		return url;
+	}
+
+	private boolean isUrl(String string) {
+		try {
+			URL url = new URL(string);
+			url.toURI();
+			return true;
+		} catch (MalformedURLException | URISyntaxException e) {
+			return false;
+		}
 	}
 
 }

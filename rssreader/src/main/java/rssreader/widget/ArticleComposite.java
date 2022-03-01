@@ -1,11 +1,10 @@
 /**
- * 
+ *
  */
 package rssreader.widget;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -28,6 +27,18 @@ import rssreader.model.Article;
  *
  */
 public class ArticleComposite extends Composite {
+
+	class HoverListener extends MouseTrackAdapter {
+		@Override
+		public void mouseEnter(MouseEvent e) {
+			ArticleComposite.this.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_SELECTION));
+		}
+
+		@Override
+		public void mouseExit(MouseEvent e) {
+			ArticleComposite.this.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
+		}
+	}
 
 	public ArticleComposite(Composite parent, int style, Article article) {
 		super(parent, style);
@@ -76,22 +87,10 @@ public class ArticleComposite extends Composite {
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(feedLabel);
 
 		Label publishedLabel = new Label(this, SWT.WRAP);
-		publishedLabel.setText(article.getPublishDate());
+		publishedLabel.setText(article.getPublishDate().toString());
 		publishedLabel.setFont(RssReader.fontRegistry.get("italic"));
 		publishedLabel.addMouseTrackListener(hoverListener);
 		publishedLabel.addMouseListener(clickListener);
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(publishedLabel);
-	}
-
-	class HoverListener extends MouseTrackAdapter {
-		@Override
-		public void mouseExit(MouseEvent e) {
-			ArticleComposite.this.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
-		}
-
-		@Override
-		public void mouseEnter(MouseEvent e) {
-			ArticleComposite.this.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_SELECTION));
-		}
 	}
 }

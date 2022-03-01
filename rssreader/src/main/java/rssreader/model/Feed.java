@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package rssreader.model;
 
@@ -11,7 +11,7 @@ public class Feed {
 	private String name;
 	private String url;
 	private boolean showItems;
-	
+
 	public Feed() {}
 
 	/**
@@ -34,24 +34,10 @@ public class Feed {
 	}
 
 	/**
-	 * @param name the name to set
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	/**
 	 * @return the url
 	 */
 	public String getUrl() {
 		return url;
-	}
-
-	/**
-	 * @param url the url to set
-	 */
-	public void setUrl(String url) {
-		this.url = url;
 	}
 
 	/**
@@ -62,10 +48,24 @@ public class Feed {
 	}
 
 	/**
+	 * @param name the name to set
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
 	 * @param showItems the showItems to set
 	 */
 	public void setShowItems(boolean showItems) {
 		this.showItems = showItems;
+	}
+
+	/**
+	 * @param url the url to set
+	 */
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 	@Override

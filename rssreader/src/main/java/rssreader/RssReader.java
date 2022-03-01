@@ -67,7 +67,7 @@ public class RssReader {
 	public static Browser browser;
 	private static ScrolledComposite articleScroller;
 
-	private static void computerSizes() {
+	private static void computerArticleSizes() {
 		int width = articleScroller.getClientArea().width;
 		articlesComposite.setSize(width - 20, SWT.DEFAULT);
 		int height = 0;
@@ -89,6 +89,7 @@ public class RssReader {
 		for (Control articleComposite : articlesComposite.getChildren()) {
 			articleComposite.dispose();
 		}
+		List<Article> articles = new ArrayList<>();
 		for (Feed feed : feeds) {
 			if (feed.isShowItems()) {
 				try {
@@ -101,17 +102,12 @@ public class RssReader {
 						Article article;
 						if (image != null) {
 							article = new Article(syndEntry.getTitle(), syndFeed.getTitle(),
-									syndEntry.getPublishedDate().toString(), syndFeed.getImage().getUrl(),
-									syndEntry.getLink());
+									syndEntry.getPublishedDate(), syndFeed.getImage().getUrl(), syndEntry.getLink());
 						} else {
 							article = new Article(syndEntry.getTitle(), syndFeed.getTitle(),
-									syndEntry.getPublishedDate().toString(), null,
-									syndEntry.getLink());
+									syndEntry.getPublishedDate(), null, syndEntry.getLink());
 						}
-						ArticleComposite articleComposite = new ArticleComposite(articlesComposite, SWT.BORDER,
-								article);
-						GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
-								.applyTo(articleComposite);
+						articles.add(article);
 					}
 				} catch (IOException | IllegalArgumentException | NullPointerException | FeedException e) {
 					MessageDialog.openError(shell, "Error",
@@ -119,10 +115,18 @@ public class RssReader {
 				}
 			}
 		}
-		computerSizes();
+		articles.sort((o1, o2) -> -(o1.getPublishDate().compareTo(o2.getPublishDate())));
+		for (Article article : articles) {
+			ArticleComposite articleComposite = new ArticleComposite(articlesComposite, SWT.BORDER, article);
+			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(articleComposite);
+		}
+		computerArticleSizes();
 	}
 
 	protected static void displayFeeds() {
+		for (Control panel : feedsComposite.getChildren()) {
+			panel.dispose();
+		}
 		for (Feed feed : feeds) {
 			FeedComposite feedComposite = new FeedComposite(feedsComposite, SWT.BORDER, feed);
 			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(feedComposite);
@@ -168,6 +172,8 @@ public class RssReader {
 		initFontRegistry(display);
 		initImageRegistry(display);
 
+		shell.setImage(imageRegistry.get("rss"));
+
 		ToolBar bar = new ToolBar(shell, SWT.BORDER);
 		bar.setLayoutData(new GridData(SWT.END, SWT.TOP, true, false));
 		ToolItem addFeedToolItem = new ToolItem(bar, SWT.PUSH);
@@ -212,9 +218,7 @@ public class RssReader {
 		articleScroller.setLayout(new FillLayout());
 		articleScroller.setExpandVertical(true);
 		articlesComposite = new Composite(articleScroller, SWT.NONE);
-		articleScroller.addListener(SWT.Resize, e -> {
-			computerSizes();
-		});
+		articleScroller.addListener(SWT.Resize, e -> computerArticleSizes());
 		articleScroller.setContent(articlesComposite);
 		articlesComposite.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 		GridLayoutFactory.fillDefaults().numColumns(1).margins(10, 10).applyTo(articlesComposite);

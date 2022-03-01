@@ -108,9 +108,9 @@
 							<dest>target</dest>
 							<input>target</input>
 							<type>PLATFORM</type>
-							<name>rssreader</name>
-							<appversion>0.0.1</appversion>
-							<linuxapprelease>0</linuxapprelease>
+							<name>RSS-Reader</name>
+							<appversion>1.0.0</appversion>
+							<linuxapprelease>beta</linuxapprelease>
 							<vendor>Footeware.ca</vendor>
 							<icon>src/main/resources/images/rss.png</icon>
 							<mainjar>rssreader-0.0.1-SNAPSHOT.jar</mainjar>
