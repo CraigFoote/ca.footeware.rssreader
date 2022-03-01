@@ -11,6 +11,8 @@ public class Feed {
 	private String name;
 	private String url;
 	private boolean showItems;
+	
+	public Feed() {}
 
 	/**
 	 * @param name

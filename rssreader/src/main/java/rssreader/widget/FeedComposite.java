@@ -40,6 +40,7 @@ public class FeedComposite extends Composite {
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(labelsComposite);
 
 		Label nameLabel = new Label(labelsComposite, SWT.NONE);
+		nameLabel.setFont(RssReader.fontRegistry.get("bold"));
 		nameLabel.setText(feed.getName());
 
 		Label urlLabel = new Label(labelsComposite, SWT.NONE);

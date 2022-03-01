@@ -1,9 +1,11 @@
 /**
  * 
  */
-package rssreader;
+package rssreader.widget;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 import org.eclipse.jface.layout.GridDataFactory;
@@ -18,6 +20,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
+import rssreader.RssReader;
 import rssreader.model.Article;
 
 /**
@@ -49,7 +52,7 @@ public class ArticleComposite extends Composite {
 				InputStream inStream = url.openStream();
 				image = new Image(Display.getCurrent(), inStream);
 				RssReader.imageRegistry.put(article.getFeedName(), image);
-			} catch (Exception e) {
+			} catch (IOException e1) {
 				image = RssReader.imageRegistry.get("rss");
 			}
 		}

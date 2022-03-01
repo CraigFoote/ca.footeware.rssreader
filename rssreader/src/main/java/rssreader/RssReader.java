@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
+import com.rometools.rome.feed.synd.SyndImage;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
@@ -47,6 +48,7 @@ import com.rometools.rome.io.XmlReader;
 import rssreader.dialog.FeedDialog;
 import rssreader.model.Article;
 import rssreader.model.Feed;
+import rssreader.widget.ArticleComposite;
 import rssreader.widget.FeedComposite;
 
 /**
@@ -95,15 +97,23 @@ public class RssReader {
 					SyndFeed syndFeed = input.build(new XmlReader(feedSource));
 					List<SyndEntry> entries = syndFeed.getEntries();
 					for (SyndEntry syndEntry : entries) {
-						Article article = new Article(syndEntry.getTitle(), syndFeed.getTitle(),
-								syndEntry.getPublishedDate().toString(), syndFeed.getImage().getUrl(),
-								syndEntry.getLink());
+						SyndImage image = syndFeed.getImage();
+						Article article;
+						if (image != null) {
+							article = new Article(syndEntry.getTitle(), syndFeed.getTitle(),
+									syndEntry.getPublishedDate().toString(), syndFeed.getImage().getUrl(),
+									syndEntry.getLink());
+						} else {
+							article = new Article(syndEntry.getTitle(), syndFeed.getTitle(),
+									syndEntry.getPublishedDate().toString(), null,
+									syndEntry.getLink());
+						}
 						ArticleComposite articleComposite = new ArticleComposite(articlesComposite, SWT.BORDER,
 								article);
 						GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
 								.applyTo(articleComposite);
 					}
-				} catch (IOException | IllegalArgumentException | FeedException e) {
+				} catch (IOException | IllegalArgumentException | NullPointerException | FeedException e) {
 					MessageDialog.openError(shell, "Error",
 							"An error occurred showing articles for '" + feed.getName() + "':\n\n" + e.getMessage());
 				}
