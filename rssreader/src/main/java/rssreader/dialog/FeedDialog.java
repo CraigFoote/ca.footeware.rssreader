@@ -19,6 +19,11 @@ import org.eclipse.swt.widgets.Text;
 
 import rssreader.model.Feed;
 
+/**
+ * A dialog to enter or edit a {@link Feed} description.
+ * 
+ * @author Footeware.ca
+ */
 public class FeedDialog extends Dialog {
 	private Text nameText;
 	private Text urlText;
@@ -26,15 +31,29 @@ public class FeedDialog extends Dialog {
 	private String url = "";
 	private Feed feed;
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param shell {@link Shell}
+	 */
 	public FeedDialog(Shell shell) {
 		super(shell);
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param shell {@link Shell}
+	 * @param feed  {@link Feed}
+	 */
 	public FeedDialog(Shell shell, Feed feed) {
 		this(shell);
 		this.feed = feed;
 	}
 
+	/**
+	 * Check whether the OK button should be enabled.
+	 */
 	private void checkEnableOkButton() {
 		boolean haveName = !name.isEmpty();
 		boolean haveUrl = !url.isEmpty() && isUrl(url);
@@ -111,6 +130,13 @@ public class FeedDialog extends Dialog {
 		return url;
 	}
 
+	/**
+	 * Tests whether the provided {@link String} can be used to construct an
+	 * {@link URL}.
+	 * 
+	 * @param string {@link String}
+	 * @return boolean true if string can be used to construct an URL
+	 */
 	private boolean isUrl(String string) {
 		try {
 			URL url = new URL(string);

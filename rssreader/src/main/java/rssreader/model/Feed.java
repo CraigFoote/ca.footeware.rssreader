@@ -4,21 +4,28 @@
 package rssreader.model;
 
 /**
+ * A domain model representing a {@link Feed}.
+ * 
  * @author Footeware.ca
- *
  */
 public class Feed {
 	private String name;
 	private String url;
 	private boolean showItems;
 
-	public Feed() {}
+	/**
+	 * Constructor.
+	 */
+	public Feed() {
+	}
 
 	/**
-	 * @param name
-	 * @param address
-	 * @param url
-	 * @param showItems
+	 * Constructor.
+	 * 
+	 * @param name      {@link String}
+	 * @param address   {@link String}
+	 * @param url       {@link String}
+	 * @param showItems boolean
 	 */
 	public Feed(String name, String url, boolean showItems) {
 		this.name = name;

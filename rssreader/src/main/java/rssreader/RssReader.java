@@ -52,6 +52,8 @@ import rssreader.widget.ArticleComposite;
 import rssreader.widget.FeedComposite;
 
 /**
+ * Reads RSS news feeds and displays their articles.
+ * 
  * @author Footeware.ca
  */
 public class RssReader {
@@ -67,7 +69,11 @@ public class RssReader {
 	public static Browser browser;
 	private static ScrolledComposite articleScroller;
 
-	private static void computerArticleSizes() {
+	/**
+	 * Compute the sizes the articles' panes should be to wrap labels keeping text
+	 * visible and set the scrollbar height to be large enough to show all articles.
+	 */
+	private static void computeArticleSizes() {
 		int width = articleScroller.getClientArea().width;
 		articlesComposite.setSize(width - 20, SWT.DEFAULT);
 		int height = 0;
@@ -78,6 +84,12 @@ public class RssReader {
 		articleScroller.setMinSize(sash.computeSize(width, SWT.DEFAULT).x, height);
 	}
 
+	/**
+	 * Delete a feed, remove it from Feeds tab and persist the feeds list.
+	 * 
+	 * @param feed          {@link Feed}
+	 * @param feedComposite {@link FeedComposite}
+	 */
 	public static void deleteFeed(Feed feed, FeedComposite feedComposite) {
 		feeds.remove(feed);
 		persistFeeds();
@@ -85,6 +97,9 @@ public class RssReader {
 		feedsComposite.setSize(feedsComposite.computeSize(shell.getSize().x - 20, SWT.DEFAULT));
 	}
 
+	/**
+	 * Display the list of articles from all enabled feeds.
+	 */
 	public static void displayArticles() {
 		for (Control articleComposite : articlesComposite.getChildren()) {
 			articleComposite.dispose();
@@ -120,9 +135,12 @@ public class RssReader {
 			ArticleComposite articleComposite = new ArticleComposite(articlesComposite, SWT.BORDER, article);
 			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(articleComposite);
 		}
-		computerArticleSizes();
+		computeArticleSizes();
 	}
 
+	/**
+	 * Display the list of all feeds in the Feeds tab.
+	 */
 	protected static void displayFeeds() {
 		for (Control panel : feedsComposite.getChildren()) {
 			panel.dispose();
@@ -134,12 +152,24 @@ public class RssReader {
 		}
 	}
 
+	/**
+	 * Initialize the font registry with commonly used fonts. The registry will
+	 * handle disposal of the fonts.
+	 * 
+	 * @param display {@link Display}
+	 */
 	private static void initFontRegistry(Display display) {
 		fontRegistry = new FontRegistry(display);
 		fontRegistry.put("bold", new FontData[] { new FontData("Arial", 12, SWT.BOLD) });
 		fontRegistry.put("italic", new FontData[] { new FontData("Arial", 12, SWT.ITALIC) });
 	}
 
+	/**
+	 * Initialize the image registry with commonly used images. The registry will
+	 * handle disposal of the images.
+	 * 
+	 * @param display {@link Display}
+	 */
 	private static void initImageRegistry(Display display) {
 		imageRegistry = new ImageRegistry(display);
 		Image addImage = new Image(display, RssReader.class.getResourceAsStream("/images/add.png"));
@@ -152,6 +182,9 @@ public class RssReader {
 		imageRegistry.put("rss", rssImage);
 	}
 
+	/**
+	 * Load the feeds from persisted preferences.
+	 */
 	private static void loadFeeds() {
 		Gson gson = new Gson();
 		String json = prefs.get("feeds", "");
@@ -160,7 +193,9 @@ public class RssReader {
 	}
 
 	/**
-	 * @param args
+	 * The program entry point.
+	 * 
+	 * @param args {@link String} array
 	 */
 	public static void main(String[] args) {
 		Display display = new Display();
@@ -218,7 +253,7 @@ public class RssReader {
 		articleScroller.setLayout(new FillLayout());
 		articleScroller.setExpandVertical(true);
 		articlesComposite = new Composite(articleScroller, SWT.NONE);
-		articleScroller.addListener(SWT.Resize, e -> computerArticleSizes());
+		articleScroller.addListener(SWT.Resize, e -> computeArticleSizes());
 		articleScroller.setContent(articlesComposite);
 		articlesComposite.setBackground(display.getSystemColor(SWT.COLOR_LIST_BACKGROUND));
 		GridLayoutFactory.fillDefaults().numColumns(1).margins(10, 10).applyTo(articlesComposite);
@@ -237,12 +272,20 @@ public class RssReader {
 		display.dispose();
 	}
 
+	/**
+	 * Persist the list of feeds in local preferences.
+	 */
 	public static void persistFeeds() {
 		Gson gson = new Gson();
 		String json = gson.toJson(feeds);
 		prefs.put("feeds", json);
 	}
 
+	/**
+	 * Update the provided composite to reflect changes in a feed's name or URL.
+	 * 
+	 * @param feedComposite {@link FeedComposite}
+	 */
 	public static void updateFeedDisplay(FeedComposite feedComposite) {
 		feedComposite.update();
 		feedComposite.layout(true);

@@ -16,18 +16,28 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseTrackAdapter;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
 import rssreader.RssReader;
 import rssreader.model.Article;
+import rssreader.model.Feed;
 
 /**
+ * A panel displaying the details of a {@link Feed} article.
+ * 
  * @author Footeware.ca
- *
  */
 public class ArticleComposite extends Composite {
 
+	/**
+	 * Listens for mouse enetering or exiting a {@link Control} and modifies its
+	 * colors.
+	 * 
+	 * @author Footeware.ca
+	 *
+	 */
 	class HoverListener extends MouseTrackAdapter {
 		@Override
 		public void mouseEnter(MouseEvent e) {
@@ -40,6 +50,13 @@ public class ArticleComposite extends Composite {
 		}
 	}
 
+	/**
+	 * Constructor.
+	 * 
+	 * @param parent  {@link Composite}
+	 * @param style   int
+	 * @param article {@link Article}
+	 */
 	public ArticleComposite(Composite parent, int style, Article article) {
 		super(parent, style);
 		GridLayoutFactory.fillDefaults().numColumns(2).margins(10, 10).applyTo(this);

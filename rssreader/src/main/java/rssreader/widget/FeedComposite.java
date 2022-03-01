@@ -20,15 +20,18 @@ import rssreader.dialog.FeedDialog;
 import rssreader.model.Feed;
 
 /**
+ * A panel displaying the details of a {@link Feed}.
+ * 
  * @author Footeware.ca
- *
  */
 public class FeedComposite extends Composite {
 
 	/**
-	 * @param parent
-	 * @param style
-	 * @param feed
+	 * Constructor.
+	 * 
+	 * @param parent {@link Composite}
+	 * @param style  int
+	 * @param feed   {@link Feed}
 	 */
 	public FeedComposite(Composite parent, int style, final Feed feed) {
 		super(parent, style);

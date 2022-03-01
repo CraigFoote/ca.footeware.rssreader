@@ -6,8 +6,9 @@ package rssreader.model;
 import java.util.Date;
 
 /**
+ * A domain model representing a {@link Feed} article.
+ * 
  * @author Footeware.ca
- *
  */
 public class Article {
 	private String title;
@@ -17,11 +18,13 @@ public class Article {
 	private String link;
 
 	/**
-	 * @param title
-	 * @param feedName
-	 * @param publishDate
-	 * @param imageUrl
-	 * @param link
+	 * Constructor.
+	 * 
+	 * @param title       {@link String}
+	 * @param feedName    {@link String}
+	 * @param publishDate {@link Date}
+	 * @param imageUrl    {@link String}
+	 * @param link        {@link String}
 	 */
 	public Article(String title, String feedName, Date publishDate, String imageUrl, String link) {
 		super();
