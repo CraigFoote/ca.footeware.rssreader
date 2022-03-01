@@ -4,13 +4,14 @@
 package rssreader.model;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * A domain model representing a {@link Feed} article.
  *
  * @author Footeware.ca
  */
-public class Article {
+public class Article implements Comparable<Article> {
 	private String title;
 	private String feedName;
 	private Date publishDate;
@@ -33,6 +34,24 @@ public class Article {
 		this.publishDate = publishDate;
 		this.imageUrl = imageUrl;
 		this.link = link;
+	}
+
+	@Override
+	public int compareTo(Article o) {
+		// sort descending, i.e. newest article listed first
+		return o.getPublishDate().compareTo(this.getPublishDate());
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if ((obj == null) || (getClass() != obj.getClass()))
+			return false;
+		Article other = (Article) obj;
+		return Objects.equals(feedName, other.feedName) && Objects.equals(imageUrl, other.imageUrl)
+				&& Objects.equals(link, other.link) && Objects.equals(publishDate, other.publishDate)
+				&& Objects.equals(title, other.title);
 	}
 
 	/**
@@ -68,6 +87,11 @@ public class Article {
 	 */
 	public String getTitle() {
 		return title;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(feedName, imageUrl, link, publishDate, title);
 	}
 
 	/**

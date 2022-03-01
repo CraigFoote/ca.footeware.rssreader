@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -58,22 +59,32 @@ import rssreader.widget.FeedComposite;
  */
 public class RssReader {
 
-	private static final Preferences prefs = Preferences.userRoot().node(RssReader.class.getName());
-	private static final List<Feed> feeds = new ArrayList<>();
-	private static SashForm sash;
-	private static Composite feedsComposite;
-	private static Composite articlesComposite;
-	public static FontRegistry fontRegistry;
-	public static ImageRegistry imageRegistry;
-	private static Shell shell;
-	public static Browser browser;
-	private static ScrolledComposite articleScroller;
+	/**
+	 * The program entry point.
+	 *
+	 * @param args {@link String} array
+	 */
+	public static void main(String[] args) {
+		RssReader reader = new RssReader();
+		reader.open();
+	}
+	
+	private final Preferences prefs = Preferences.userRoot().node(RssReader.class.getName());
+	private final List<Feed> feeds = new ArrayList<>();
+	private SashForm sash;
+	private Composite feedsComposite;
+	private Composite articlesComposite;
+	private FontRegistry fontRegistry;
+	private ImageRegistry imageRegistry;
+	private Shell shell;
+	private Browser browser;
+	private ScrolledComposite articleScroller;
 
 	/**
 	 * Compute the sizes the articles' panes should be to wrap labels keeping text
 	 * visible and set the scrollbar height to be large enough to show all articles.
 	 */
-	private static void computeArticleSizes() {
+	private void computeArticleSizes() {
 		int width = articleScroller.getClientArea().width;
 		articlesComposite.setSize(width - 20, SWT.DEFAULT);
 		int height = 0;
@@ -90,7 +101,7 @@ public class RssReader {
 	 * @param feed          {@link Feed}
 	 * @param feedComposite {@link FeedComposite}
 	 */
-	public static void deleteFeed(Feed feed, FeedComposite feedComposite) {
+	public void deleteFeed(Feed feed, FeedComposite feedComposite) {
 		feeds.remove(feed);
 		persistFeeds();
 		feedComposite.dispose();
@@ -100,7 +111,7 @@ public class RssReader {
 	/**
 	 * Display the list of articles from all enabled feeds.
 	 */
-	public static void displayArticles() {
+	public void displayArticles() {
 		for (Control articleComposite : articlesComposite.getChildren()) {
 			articleComposite.dispose();
 		}
@@ -110,12 +121,12 @@ public class RssReader {
 	/**
 	 * Display the list of all feeds in the Feeds tab.
 	 */
-	protected static void displayFeeds() {
+	protected void displayFeeds() {
 		for (Control panel : feedsComposite.getChildren()) {
 			panel.dispose();
 		}
 		for (Feed feed : feeds) {
-			FeedComposite feedComposite = new FeedComposite(feedsComposite, SWT.BORDER, feed);
+			FeedComposite feedComposite = new FeedComposite(feedsComposite, SWT.BORDER, this, feed);
 			GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(feedComposite);
 			feedsComposite.setSize(feedsComposite.computeSize(shell.getSize().x - 20, SWT.DEFAULT));
 		}
@@ -127,7 +138,7 @@ public class RssReader {
 	 * @param feed {@link Feed}
 	 * @return {@link List} of {@link Article}
 	 */
-	private static List<Article> fetchArticles(Feed feed) {
+	private List<Article> fetchArticles(Feed feed) {
 		List<Article> articles = new ArrayList<>();
 		try {
 			URL feedSource = new URL(feed.getUrl());
@@ -159,7 +170,7 @@ public class RssReader {
 	 *
 	 * @return {@link Thread}
 	 */
-	public static Thread getArticlesTask() {
+	public Thread getArticlesTask() {
 		return new Thread() {
 			@Override
 			public void run() {
@@ -170,12 +181,12 @@ public class RssReader {
 						articles.addAll(fetchedArticles);
 					}
 				}
-				articles.sort((o1, o2) -> -(o1.getPublishDate().compareTo(o2.getPublishDate())));
+				Collections.sort(articles);
 				// update UI
 				Display.getDefault().asyncExec(() -> {
 					for (Article article : articles) {
 						ArticleComposite articleComposite = new ArticleComposite(articlesComposite, SWT.BORDER,
-								article);
+								RssReader.this, article);
 						GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false)
 								.applyTo(articleComposite);
 					}
@@ -186,12 +197,33 @@ public class RssReader {
 	}
 
 	/**
+	 * @return the browser
+	 */
+	public Browser getBrowser() {
+		return browser;
+	}
+
+	/**
+	 * @return the fontRegistry
+	 */
+	public FontRegistry getFontRegistry() {
+		return fontRegistry;
+	}
+
+	/**
+	 * @return the imageRegistry
+	 */
+	public ImageRegistry getImageRegistry() {
+		return imageRegistry;
+	}
+
+	/**
 	 * Initialize the font registry with commonly used fonts. The registry will
 	 * handle disposal of the fonts.
 	 *
 	 * @param display {@link Display}
 	 */
-	private static void initFontRegistry(Display display) {
+	private void initFontRegistry(Display display) {
 		fontRegistry = new FontRegistry(display);
 		fontRegistry.put("bold", new FontData[] { new FontData("Arial", 12, SWT.BOLD) });
 		fontRegistry.put("italic", new FontData[] { new FontData("Arial", 12, SWT.ITALIC) });
@@ -203,7 +235,7 @@ public class RssReader {
 	 *
 	 * @param display {@link Display}
 	 */
-	private static void initImageRegistry(Display display) {
+	private void initImageRegistry(Display display) {
 		imageRegistry = new ImageRegistry(display);
 		Image addImage = new Image(display, RssReader.class.getResourceAsStream("/images/add.png"));
 		imageRegistry.put("add", addImage);
@@ -218,19 +250,14 @@ public class RssReader {
 	/**
 	 * Load the feeds from persisted preferences.
 	 */
-	private static void loadFeeds() {
+	private void loadFeeds() {
 		Gson gson = new Gson();
 		String json = prefs.get("feeds", "");
 		Type feedList = TypeToken.getParameterized(ArrayList.class, Feed.class).getType();
 		feeds.addAll(gson.fromJson(json, feedList));
 	}
 
-	/**
-	 * The program entry point.
-	 *
-	 * @param args {@link String} array
-	 */
-	public static void main(String[] args) {
+	private void open() {
 		Display display = new Display();
 		shell = new Shell(display);
 		shell.setText("RSS Reader");
@@ -306,7 +333,7 @@ public class RssReader {
 	/**
 	 * Persist the list of feeds in local preferences.
 	 */
-	public static void persistFeeds() {
+	public void persistFeeds() {
 		Gson gson = new Gson();
 		String json = gson.toJson(feeds);
 		prefs.put("feeds", json);
@@ -317,7 +344,7 @@ public class RssReader {
 	 *
 	 * @param feedComposite {@link FeedComposite}
 	 */
-	public static void updateFeedDisplay(FeedComposite feedComposite) {
+	public void updateFeedDisplay(FeedComposite feedComposite) {
 		feedComposite.update();
 		feedComposite.layout(true);
 	}

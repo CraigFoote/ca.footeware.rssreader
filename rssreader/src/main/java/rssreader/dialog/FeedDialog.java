@@ -25,8 +25,6 @@ import rssreader.model.Feed;
  * @author Footeware.ca
  */
 public class FeedDialog extends Dialog {
-	private Text nameText;
-	private Text urlText;
 	private String name = "";
 	private String url = "";
 	private Feed feed;
@@ -81,7 +79,7 @@ public class FeedDialog extends Dialog {
 		Label nameLabel = new Label(container, SWT.NONE);
 		nameLabel.setText("Name:");
 
-		nameText = new Text(container, SWT.BORDER);
+		Text nameText = new Text(container, SWT.BORDER);
 		nameText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		if (feed != null) {
 			nameText.setText(feed.getName());
@@ -96,7 +94,7 @@ public class FeedDialog extends Dialog {
 		Label urlLabel = new Label(container, SWT.NONE);
 		urlLabel.setText("Address:");
 
-		urlText = new Text(container, SWT.BORDER);
+		Text urlText = new Text(container, SWT.BORDER);
 		urlText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		if (feed != null) {
 			urlText.setText(feed.getUrl());
@@ -139,8 +137,8 @@ public class FeedDialog extends Dialog {
 	 */
 	private boolean isUrl(String string) {
 		try {
-			URL url = new URL(string);
-			url.toURI();
+			URL theUrl = new URL(string);
+			theUrl.toURI();
 			return true;
 		} catch (MalformedURLException | URISyntaxException e) {
 			return false;

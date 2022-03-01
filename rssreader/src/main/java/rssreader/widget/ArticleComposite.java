@@ -32,13 +32,13 @@ import rssreader.model.Feed;
 public class ArticleComposite extends Composite {
 
 	/**
-	 * Listens for mouse enetering or exiting a {@link Control} and modifies its
+	 * Listens for mouse entering or exiting a {@link Control} and modifies its
 	 * colors.
 	 *
 	 * @author Footeware.ca
 	 *
 	 */
-	class HoverListener extends MouseTrackAdapter {
+	private class HoverListener extends MouseTrackAdapter {
 		@Override
 		public void mouseEnter(MouseEvent e) {
 			ArticleComposite.this.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_SELECTION));
@@ -55,9 +55,10 @@ public class ArticleComposite extends Composite {
 	 *
 	 * @param parent  {@link Composite}
 	 * @param style   int
+	 * @param reader  {@link RssReader}
 	 * @param article {@link Article}
 	 */
-	public ArticleComposite(Composite parent, int style, Article article) {
+	public ArticleComposite(Composite parent, int style, RssReader reader, Article article) {
 		super(parent, style);
 		GridLayoutFactory.fillDefaults().numColumns(2).margins(10, 10).applyTo(this);
 
@@ -66,22 +67,22 @@ public class ArticleComposite extends Composite {
 		MouseListener clickListener = new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				RssReader.browser.setUrl(article.getLink());
+				reader.getBrowser().setUrl(article.getLink());
 			}
 		};
 
 		this.addMouseTrackListener(hoverListener);
 		this.addMouseListener(clickListener);
 
-		Image image = RssReader.imageRegistry.get(article.getFeedName());
+		Image image = reader.getImageRegistry().get(article.getFeedName());
 		if (image == null) {
 			try {
 				URL url = new URL(article.getImageUrl());
 				InputStream inStream = url.openStream();
 				image = new Image(Display.getCurrent(), inStream);
-				RssReader.imageRegistry.put(article.getFeedName(), image);
+				reader.getImageRegistry().put(article.getFeedName(), image);
 			} catch (IOException e1) {
-				image = RssReader.imageRegistry.get("rss");
+				image = reader.getImageRegistry().get("rss");
 			}
 		}
 		Label imageLabel = new Label(this, SWT.NONE);
@@ -92,7 +93,7 @@ public class ArticleComposite extends Composite {
 
 		Label titleLabel = new Label(this, SWT.WRAP);
 		titleLabel.setText(article.getTitle());
-		titleLabel.setFont(RssReader.fontRegistry.get("bold"));
+		titleLabel.setFont(reader.getFontRegistry().get("bold"));
 		titleLabel.addMouseTrackListener(hoverListener);
 		titleLabel.addMouseListener(clickListener);
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(titleLabel);
@@ -105,7 +106,7 @@ public class ArticleComposite extends Composite {
 
 		Label publishedLabel = new Label(this, SWT.WRAP);
 		publishedLabel.setText(article.getPublishDate().toString());
-		publishedLabel.setFont(RssReader.fontRegistry.get("italic"));
+		publishedLabel.setFont(reader.getFontRegistry().get("italic"));
 		publishedLabel.addMouseTrackListener(hoverListener);
 		publishedLabel.addMouseListener(clickListener);
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(publishedLabel);

@@ -33,7 +33,7 @@ public class FeedComposite extends Composite {
 	 * @param style  int
 	 * @param feed   {@link Feed}
 	 */
-	public FeedComposite(Composite parent, int style, final Feed feed) {
+	public FeedComposite(Composite parent, int style, RssReader reader, final Feed feed) {
 		super(parent, style);
 		GridLayoutFactory.fillDefaults().numColumns(2).margins(10, 10).applyTo(this);
 
@@ -42,7 +42,7 @@ public class FeedComposite extends Composite {
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(labelsComposite);
 
 		Label nameLabel = new Label(labelsComposite, SWT.NONE);
-		nameLabel.setFont(RssReader.fontRegistry.get("bold"));
+		nameLabel.setFont(reader.getFontRegistry().get("bold"));
 		nameLabel.setText(feed.getName());
 
 		Label urlLabel = new Label(labelsComposite, SWT.NONE);
@@ -59,14 +59,14 @@ public class FeedComposite extends Composite {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				feed.setShowItems(((Button) e.getSource()).getSelection());
-				RssReader.persistFeeds();
-				RssReader.displayArticles();
+				reader.persistFeeds();
+				reader.displayArticles();
 			}
 		});
 		GridDataFactory.fillDefaults().align(SWT.END, SWT.CENTER).applyTo(showArticlesButton);
 
 		Button editButton = new Button(buttonsComposite, SWT.PUSH);
-		editButton.setImage(RssReader.imageRegistry.get("edit"));
+		editButton.setImage(reader.getImageRegistry().get("edit"));
 		editButton.setToolTipText("Edit");
 		editButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -77,16 +77,16 @@ public class FeedComposite extends Composite {
 					String url = dialog.getUrl();
 					feed.setName(name);
 					feed.setUrl(url);
-					RssReader.persistFeeds();
+					reader.persistFeeds();
 					nameLabel.setText(name);
 					urlLabel.setText(url);
-					RssReader.updateFeedDisplay(FeedComposite.this);
+					reader.updateFeedDisplay(FeedComposite.this);
 				}
 			}
 		});
 
 		Button deleteButton = new Button(buttonsComposite, SWT.PUSH);
-		deleteButton.setImage(RssReader.imageRegistry.get("delete"));
+		deleteButton.setImage(reader.getImageRegistry().get("delete"));
 		deleteButton.setToolTipText("Delete");
 		deleteButton.addSelectionListener(new SelectionAdapter() {
 			@Override
@@ -94,7 +94,7 @@ public class FeedComposite extends Composite {
 				boolean result = MessageDialog.openConfirm(FeedComposite.this.getShell(), "Confirm",
 						"Are you sure you want to delete '" + feed.getName() + "'?");
 				if (result) {
-					RssReader.deleteFeed(feed, FeedComposite.this);
+					reader.deleteFeed(feed, FeedComposite.this);
 				}
 			}
 		});
