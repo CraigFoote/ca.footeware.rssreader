@@ -300,6 +300,7 @@ public class RssReader {
 		feedsTabItem.setText("Feeds");
 		ScrolledComposite feedsScroller = new ScrolledComposite(tabFolder, SWT.H_SCROLL | SWT.V_SCROLL);
 		feedsScroller.setLayout(new FillLayout());
+		feedsScroller.addListener(SWT.Resize, e -> computeFeedSizes());
 		feedsTabItem.setControl(feedsScroller);
 
 		feedsComposite = new Composite(feedsScroller, SWT.NONE);
@@ -334,6 +335,10 @@ public class RssReader {
 				display.sleep();
 		}
 		display.dispose();
+	}
+
+	private void computeFeedSizes() {
+		feedsComposite.setSize(feedsComposite.computeSize(shell.getSize().x - 20, SWT.DEFAULT));
 	}
 
 	/**
