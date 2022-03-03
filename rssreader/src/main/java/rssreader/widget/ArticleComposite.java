@@ -77,20 +77,20 @@ public class ArticleComposite extends Composite {
 		MouseListener clickListener = new MouseAdapter() {
 			@Override
 			public void mouseDown(MouseEvent e) {
-				reader.getBrowser().setUrl(article.getLink());
+				reader.getBrowser().setUrl(article.link());
 			}
 		};
 
 		this.addMouseTrackListener(hoverListener);
 		this.addMouseListener(clickListener);
 
-		Image image = reader.getImageRegistry().get(article.getFeedName());
+		Image image = reader.getImageRegistry().get(article.feedName());
 		if (image == null) {
 			try {
-				URL url = new URL(article.getImageUrl());
+				URL url = new URL(article.imageUrl());
 				InputStream inStream = url.openStream();
 				image = new Image(Display.getCurrent(), inStream);
-				reader.getImageRegistry().put(article.getFeedName(), image);
+				reader.getImageRegistry().put(article.feedName(), image);
 			} catch (IOException e1) {
 				image = reader.getImageRegistry().get("rss");
 			}
@@ -102,7 +102,7 @@ public class ArticleComposite extends Composite {
 		GridDataFactory.fillDefaults().span(1, 3).applyTo(imageLabel);
 
 		titleLabel = new Label(this, SWT.WRAP);
-		titleLabel.setText(article.getTitle());
+		titleLabel.setText(article.title());
 		titleLabel.setFont(reader.getFontRegistry().get("bold"));
 		titleLabel.addMouseTrackListener(hoverListener);
 		titleLabel.addMouseListener(clickListener);
@@ -110,14 +110,14 @@ public class ArticleComposite extends Composite {
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(titleLabel);
 
 		feedLabel = new Label(this, SWT.WRAP);
-		feedLabel.setText(article.getFeedName());
+		feedLabel.setText(article.feedName());
 		feedLabel.addMouseTrackListener(hoverListener);
 		feedLabel.addMouseListener(clickListener);
 		feedLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(feedLabel);
 
 		publishedLabel = new Label(this, SWT.WRAP);
-		publishedLabel.setText(article.getPublishDate().toString());
+		publishedLabel.setText(article.publishDate().toString());
 		publishedLabel.setFont(reader.getFontRegistry().get("italic"));
 		publishedLabel.addMouseTrackListener(hoverListener);
 		publishedLabel.addMouseListener(clickListener);

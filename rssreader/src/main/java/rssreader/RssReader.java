@@ -96,6 +96,10 @@ public class RssReader {
 		articleScroller.setMinSize(sash.computeSize(width, SWT.DEFAULT).x, height);
 	}
 
+	private void computeFeedSizes() {
+		feedsComposite.setSize(feedsComposite.computeSize(shell.getSize().x - 20, SWT.DEFAULT));
+	}
+
 	/**
 	 * Delete a feed, remove it from Feeds tab and persist the feeds list.
 	 *
@@ -335,10 +339,6 @@ public class RssReader {
 				display.sleep();
 		}
 		display.dispose();
-	}
-
-	private void computeFeedSizes() {
-		feedsComposite.setSize(feedsComposite.computeSize(shell.getSize().x - 20, SWT.DEFAULT));
 	}
 
 	/**

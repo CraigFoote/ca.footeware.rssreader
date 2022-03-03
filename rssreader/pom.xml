@@ -109,7 +109,7 @@
 							<dest>target</dest>
 							<type>PLATFORM</type>
 							<name>RSS-Reader</name>
-							<appversion>1.0.3</appversion>
+							<appversion>1.1.0</appversion>
 							<linuxapprelease>release</linuxapprelease>
 							<vendor>Footeware.ca</vendor>
 							<licensefile>src/main/resources/LICENSE</licensefile>
