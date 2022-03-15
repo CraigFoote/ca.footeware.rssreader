@@ -55,9 +55,10 @@ public class ArticleComposite extends Composite {
 			publishedLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
 		}
 	}
+
 	private Label titleLabel;
 	private Label feedLabel;
-
+	private Label eyesLabel;
 	private Label publishedLabel;
 
 	/**
@@ -70,7 +71,7 @@ public class ArticleComposite extends Composite {
 	 */
 	public ArticleComposite(Composite parent, int style, RssReader reader, Article article) {
 		super(parent, style);
-		GridLayoutFactory.fillDefaults().numColumns(2).margins(10, 10).applyTo(this);
+		GridLayoutFactory.fillDefaults().numColumns(3).margins(10, 10).applyTo(this);
 
 		this.setBackground(Display.getDefault().getSystemColor(SWT.COLOR_WIDGET_BACKGROUND));
 		HoverListener hoverListener = new HoverListener();
@@ -78,6 +79,7 @@ public class ArticleComposite extends Composite {
 			@Override
 			public void mouseDown(MouseEvent e) {
 				reader.getBrowser().setUrl(article.link());
+				eyesLabel.setVisible(true);
 			}
 		};
 
@@ -108,6 +110,12 @@ public class ArticleComposite extends Composite {
 		titleLabel.addMouseListener(clickListener);
 		titleLabel.setForeground(Display.getDefault().getSystemColor(SWT.COLOR_LIST_FOREGROUND));
 		GridDataFactory.fillDefaults().align(SWT.FILL, SWT.CENTER).grab(true, false).applyTo(titleLabel);
+
+		Image eyesImage = reader.getImageRegistry().get("eyes");
+		eyesLabel = new Label(this, SWT.NONE);
+		eyesLabel.setImage(eyesImage);
+		eyesLabel.setVisible(false);
+		GridDataFactory.fillDefaults().align(SWT.END, SWT.TOP).span(1, 3).applyTo(eyesLabel);
 
 		feedLabel = new Label(this, SWT.WRAP);
 		feedLabel.setText(article.feedName());

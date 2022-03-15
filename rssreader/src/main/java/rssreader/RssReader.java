@@ -250,6 +250,8 @@ public class RssReader {
 		imageRegistry.put("delete", deleteImage);
 		Image rssImage = new Image(display, RssReader.class.getResourceAsStream("/images/rss.png"));
 		imageRegistry.put("rss", rssImage);
+		Image eyesImage = new Image(display, RssReader.class.getResourceAsStream("/images/eyes.png"));
+		imageRegistry.put("eyes", eyesImage);
 	}
 
 	/**
