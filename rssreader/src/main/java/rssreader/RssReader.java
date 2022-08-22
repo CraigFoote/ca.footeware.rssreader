@@ -304,6 +304,7 @@ public class RssReader {
 
 		TabItem feedsTabItem = new TabItem(tabFolder, SWT.NONE);
 		feedsTabItem.setText("Feeds");
+		feedsTabItem.setImage(getImageRegistry().get("edit"));
 		ScrolledComposite feedsScroller = new ScrolledComposite(tabFolder, SWT.H_SCROLL | SWT.V_SCROLL);
 		feedsScroller.setLayout(new FillLayout());
 		feedsScroller.addListener(SWT.Resize, e -> computeFeedSizes());
@@ -316,6 +317,7 @@ public class RssReader {
 
 		TabItem articlesTabItem = new TabItem(tabFolder, SWT.NONE);
 		articlesTabItem.setText("Articles");
+		articlesTabItem.setImage(getImageRegistry().get("rss"));
 		sash = new SashForm(tabFolder, SWT.BORDER | SWT.HORIZONTAL);
 		articlesTabItem.setControl(sash);
 
